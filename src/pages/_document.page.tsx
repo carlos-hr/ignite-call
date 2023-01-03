@@ -9,7 +9,9 @@ export default function Document() {
           id="stitches"
           dangerouslySetInnerHTML={{ __html: getCssText() }}
         />
+        <meta name="color-scheme" content="dark light" />
       </Head>
+
       <body>
         <Main />
         <NextScript />
