@@ -21,6 +21,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { getWeekDays } from '../../../utils/get-week-days'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { convertTimeStringToMinutes } from '../../../utils/convert-time-string-to-minutes'
 
 const timerIntervalsFormSchema = z.object({
   intervals: z
@@ -36,10 +37,31 @@ const timerIntervalsFormSchema = z.object({
     .transform((intervals) => intervals.filter((interval) => interval.enabled))
     .refine((intervals) => intervals.length >= 1, {
       message: 'Você precisa selecionar pelo menos um dia da semana',
-    }),
+    })
+    .transform((intervals) =>
+      intervals.map((interval) => {
+        return {
+          weekDay: interval.weekDay,
+          startTimeInMinutes: convertTimeStringToMinutes(interval.startTime),
+          endTimeInMinutes: convertTimeStringToMinutes(interval.endTime),
+        }
+      }),
+    )
+    .refine(
+      (intervals) =>
+        intervals.every(
+          (interval) =>
+            interval.endTimeInMinutes - interval.startTimeInMinutes >= 60,
+        ),
+      {
+        message:
+          'O horário de término deve ser pelo menos 1h distante do início',
+      },
+    ),
 })
 
-type TimeIntervalsFormData = z.infer<typeof timerIntervalsFormSchema>
+type TimeIntervalsFormDataInput = z.input<typeof timerIntervalsFormSchema>
+type TimeIntervalsFormDataOutput = z.output<typeof timerIntervalsFormSchema>
 
 export default function TimeIntervals() {
   const weekDays = getWeekDays()
@@ -50,7 +72,7 @@ export default function TimeIntervals() {
     formState: { errors, isSubmitting },
     control,
     watch,
-  } = useForm({
+  } = useForm<TimeIntervalsFormDataInput>({
     resolver: zodResolver(timerIntervalsFormSchema),
     defaultValues: {
       intervals: [
@@ -71,7 +93,9 @@ export default function TimeIntervals() {
   })
   const intervals = watch('intervals')
 
-  function handleSetTimeIntervals(data: TimeIntervalsFormData) {}
+  function handleSetTimeIntervals(data: any) {
+    const formData = data as TimeIntervalsFormDataOutput
+  }
 
   return (
     <Container>
