@@ -16,7 +16,7 @@ import {
   IntervalItem,
   IntervalsContainer,
 } from './styles'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { getWeekDays } from '../../../utils/get-week-days'
 
@@ -30,6 +30,7 @@ export default function TimeIntervals() {
     handleSubmit,
     formState: { errors, isSubmitting },
     control,
+    watch,
   } = useForm({
     defaultValues: {
       intervals: [
@@ -48,6 +49,7 @@ export default function TimeIntervals() {
     name: 'intervals',
     control,
   })
+  const intervals = watch('intervals')
 
   function handleSetTimeIntervals() {}
 
@@ -65,11 +67,23 @@ export default function TimeIntervals() {
 
       <IntervalBox as="form" onSubmit={handleSubmit(handleSetTimeIntervals)}>
         <IntervalsContainer>
-          {fields.map((field, i) => (
-            <IntervalItem key={field.id}>
+          {fields.map((fieldDay, i) => (
+            <IntervalItem key={fieldDay.id}>
               <IntervalDay>
-                <Checkbox checked={field.enabled} />
-                <Text>{weekDays[field.weekDay]}</Text>
+                <Controller
+                  name={`intervals.${i}.enabled`}
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked === true)
+                      }}
+                      checked={field.value}
+                    />
+                  )}
+                />
+
+                <Text>{weekDays[fieldDay.weekDay]}</Text>
               </IntervalDay>
 
               <IntervalInputs>
@@ -78,12 +92,14 @@ export default function TimeIntervals() {
                   type="time"
                   step={60}
                   {...register(`intervals.${i}.startTime`)}
+                  disabled={intervals[i].enabled === false}
                 />
                 <TextInput
                   size="sm"
                   type="time"
                   step={60}
                   {...register(`intervals.${i}.endTime`)}
+                  disabled={intervals[i].enabled === false}
                 />
               </IntervalInputs>
             </IntervalItem>
@@ -91,7 +107,8 @@ export default function TimeIntervals() {
         </IntervalsContainer>
 
         <Button type="submit">
-          Próximo passo <ArrowRight />
+          Próximo passo
+          <ArrowRight />
         </Button>
       </IntervalBox>
     </Container>
