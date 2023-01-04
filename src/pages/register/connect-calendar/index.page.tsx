@@ -12,6 +12,10 @@ export default function ConnectCalendar() {
   const hasAuthError = !!router.query.error
   const isAuthenticated = session.status === 'authenticated'
 
+  async function handleNextStep() {
+    await router.push('/register/time-intervals')
+  }
+
   return (
     <Container>
       <Header>
@@ -51,7 +55,11 @@ export default function ConnectCalendar() {
           </AuthError>
         )}
 
-        <Button type="button" disabled={!isAuthenticated}>
+        <Button
+          onClick={handleNextStep}
+          type="button"
+          disabled={!isAuthenticated}
+        >
           Próximo passo
           <ArrowRight />
         </Button>
