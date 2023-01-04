@@ -17,6 +17,7 @@ model User {
   created_at DateTime @default(now())
   email      String?  @unique
   avatar_url String?
+  bio        String?
 
   accounts      Account[]
   sessions      Session[]
