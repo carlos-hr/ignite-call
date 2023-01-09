@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import dayjs from 'dayjs'
 import { Calendar } from '../../../../../components/Calendar'
 import {
   Container,
@@ -8,15 +10,20 @@ import {
 } from './styles'
 
 export function CalendarStep() {
-  const isDateSelected = true
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+
+  const isDateSelected = !!selectedDate
+
+  const weekDay = selectedDate && dayjs(selectedDate).format('dddd')
+  const dayAndMonth = selectedDate && dayjs(selectedDate).format('DD[ de ]MMMM')
 
   return (
     <Container isTimePickerOpen={isDateSelected}>
-      <Calendar />
+      <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />
       {isDateSelected && (
         <TimePicker>
           <TimePickerHeader>
-            Terça feira <span>dia mes</span>
+            {weekDay} <span>{dayAndMonth}</span>
           </TimePickerHeader>
 
           <TimePickerList>
