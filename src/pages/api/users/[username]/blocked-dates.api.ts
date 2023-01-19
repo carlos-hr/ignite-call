@@ -60,7 +60,6 @@ export default async function handler(
   `
 
   const blockedDates = blockedDatesRaw.map((item) => item.date)
-  console.log(blockedDatesRaw, blockedDates)
 
-  return res.json({ blockedWeekDays })
+  return res.json({ blockedWeekDays, blockedDates })
 }
