@@ -86,16 +86,13 @@ export function ConfirmStep({
       </label>
 
       <FormActions>
-        <Button
-          type="button"
-          variant="tertiary"
-          disabled={isSubmitting}
-          onClick={onCancelConfirmation}
-        >
+        <Button type="button" variant="tertiary" onClick={onCancelConfirmation}>
           Cancelar
         </Button>
 
-        <Button type="submit">Confirmar</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          Confirmar
+        </Button>
       </FormActions>
     </ConfirmForm>
   )
