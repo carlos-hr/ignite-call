@@ -1,3 +1,4 @@
+import { NextSeo } from 'next-seo'
 import {
   Button,
   Checkbox,
@@ -103,67 +104,70 @@ export default function TimeIntervals() {
   }
 
   return (
-    <Container>
-      <Header>
-        <Heading as="strong">Quase lá</Heading>
-        <Text>
-          Defina o intervalo de horários que você está disponível em cada dia da
-          semana.
-        </Text>
+    <>
+      <NextSeo title="Conect sua agenda do Google | Ignite Call" noindex />
+      <Container>
+        <Header>
+          <Heading as="strong">Quase lá</Heading>
+          <Text>
+            Defina o intervalo de horários que você está disponível em cada dia
+            da semana.
+          </Text>
 
-        <MultiStep size={4} currentStep={3} />
-      </Header>
+          <MultiStep size={4} currentStep={3} />
+        </Header>
 
-      <IntervalBox as="form" onSubmit={handleSubmit(handleSetTimeIntervals)}>
-        <IntervalsContainer>
-          {fields.map((fieldDay, i) => (
-            <IntervalItem key={fieldDay.id}>
-              <IntervalDay>
-                <Controller
-                  name={`intervals.${i}.enabled`}
-                  control={control}
-                  render={({ field }) => (
-                    <Checkbox
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked === true)
-                      }}
-                      checked={field.value}
-                    />
-                  )}
-                />
+        <IntervalBox as="form" onSubmit={handleSubmit(handleSetTimeIntervals)}>
+          <IntervalsContainer>
+            {fields.map((fieldDay, i) => (
+              <IntervalItem key={fieldDay.id}>
+                <IntervalDay>
+                  <Controller
+                    name={`intervals.${i}.enabled`}
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked === true)
+                        }}
+                        checked={field.value}
+                      />
+                    )}
+                  />
 
-                <Text>{weekDays[fieldDay.weekDay]}</Text>
-              </IntervalDay>
+                  <Text>{weekDays[fieldDay.weekDay]}</Text>
+                </IntervalDay>
 
-              <IntervalInputs>
-                <TextInput
-                  size="sm"
-                  type="time"
-                  step={60}
-                  {...register(`intervals.${i}.startTime`)}
-                  disabled={intervals[i].enabled === false}
-                />
-                <TextInput
-                  size="sm"
-                  type="time"
-                  step={60}
-                  {...register(`intervals.${i}.endTime`)}
-                  disabled={intervals[i].enabled === false}
-                />
-              </IntervalInputs>
-            </IntervalItem>
-          ))}
-        </IntervalsContainer>
+                <IntervalInputs>
+                  <TextInput
+                    size="sm"
+                    type="time"
+                    step={60}
+                    {...register(`intervals.${i}.startTime`)}
+                    disabled={intervals[i].enabled === false}
+                  />
+                  <TextInput
+                    size="sm"
+                    type="time"
+                    step={60}
+                    {...register(`intervals.${i}.endTime`)}
+                    disabled={intervals[i].enabled === false}
+                  />
+                </IntervalInputs>
+              </IntervalItem>
+            ))}
+          </IntervalsContainer>
 
-        <FormError size="sm">
-          {errors.intervals && errors.intervals.message}
-        </FormError>
+          <FormError size="sm">
+            {errors.intervals && errors.intervals.message}
+          </FormError>
 
-        <Button type="submit" disabled={isSubmitting}>
-          Próximo passo
-          <ArrowRight />
-        </Button>
-      </IntervalBox>
-    </Container>
+          <Button type="submit" disabled={isSubmitting}>
+            Próximo passo
+            <ArrowRight />
+          </Button>
+        </IntervalBox>
+      </Container>
+    </>
   )
 }
